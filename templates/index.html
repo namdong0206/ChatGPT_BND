@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ứng dụng dịch Anh → Việt</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+</head>
+<body>
+  <main class="container">
+    <h1>Dịch tài liệu tiếng Anh sang tiếng Việt</h1>
+    <p>Tải lên file <strong>.txt</strong>, <strong>.docx</strong> hoặc <strong>.pdf</strong>, hệ thống sẽ dịch và trau chuốt văn phong tự nhiên.</p>
+
+    <section class="card">
+      <form action="/process" method="post" enctype="multipart/form-data" class="stack">
+        <label for="file">Chọn tệp đầu vào</label>
+        <input id="file" name="file" type="file" accept=".txt,.docx,.pdf" required />
+        <button type="submit">Dịch văn bản</button>
+      </form>
+    </section>
+
+    {% if result.error %}
+      <section class="card error">{{ result.error }}</section>
+    {% endif %}
+
+    {% if result.translated_text %}
+      <section class="grid">
+        <article class="card">
+          <h2>Nội dung gốc</h2>
+          <pre>{{ result.source_text }}</pre>
+        </article>
+
+        <article class="card">
+          <h2>Bản dịch tiếng Việt (có thể chỉnh sửa)</h2>
+          <form action="/download" method="post" class="stack">
+            <textarea name="edited_text">{{ result.translated_text }}</textarea>
+            <div class="row">
+              <label for="output_format">Định dạng xuất:</label>
+              <select id="output_format" name="output_format">
+                <option value="txt">TXT</option>
+                <option value="docx">DOCX</option>
+              </select>
+            </div>
+            <button type="submit">Tải bản đã chỉnh sửa</button>
+          </form>
+        </article>
+      </section>
+    {% endif %}
+  </main>
+</body>
+</html>
